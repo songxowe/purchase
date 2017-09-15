@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.newer.purchase.dao.QuoteContAppMapper">
+
+	<resultMap type="com.newer.purchase.pojo.Enquire" id="enquire-result">
+		<id property="id" column="ID" />
+		<result property="enquireNum" column="enquire_Num" />
+		<result property="enquireName" column="enquire_Name" />
+		<result property="buildDate" column="build_Date" />
+		<result property="company" column="company" />
+		<result property="linkman" column="linkman" />
+		<result property="address" column="address" />
+		<result property="phone" column="phone" />
+		<result property="fax" column="fax" />
+		<result property="zip" column="zip" />
+		<result property="email" column="email" />
+		<result property="endDate" column="end_Date" />
+		<result property="remark" column="remark" />
+		<result property="minPrice" column="minPrice" />
+		<result property="maxPrice" column="maxPrice" />
+		<association property="enquDetail" column="enquire_id" javaType="com.newer.purchase.pojo.EnquireDetail" resultMap="enquireDetail-result" />
+		<association property="order" column="oid" javaType="com.newer.purchase.pojo.Orders" resultMap="orders-result" />	
+		<collection property="quotes" javaType="ArrayList"  ofType="com.newer.purchase.pojo.Quote" resultMap="quote-result" />
+	</resultMap>
+	
+	<resultMap type="com.newer.purchase.pojo.EnquireList" id="enquirelist-result">
+		<id property="id" column="ID" />
+		<result property="enquireNum" column="enquire_Num" />
+		<result property="enquireName" column="enquire_Name" />
+		<result property="buildDate" column="build_Date" />
+		<result property="endDate" column="end_Date" />
+		<result property="minPrice" column="minPrice" />
+		<result property="maxPrice" column="maxPrice" />
+	</resultMap>
+	
+	<resultMap type="com.newer.purchase.pojo.EnquireDetail" id="enquireDetail-result">
+		<id property="id" column="ID" />
+		<result property="enquireId" column="enquire_Id" />
+		<result property="orderId" column="order_Id" />
+		<result property="materialCode" column="material_Code" />
+		<result property="materialName" column="material_Name" />
+		<result property="amount" column="amount" />
+		<result property="measureUnit" column="measure_Unit" />
+		<result property="startDate" column="start_Date" />
+		<result property="endDate" column="end_Date" />
+		<result property="standard" column="standard" />
+		<result property="factory" column="factory" />
+		<result property="prodYear" column="prod_Year" />
+		<result property="wrap" column="ewrap" />
+		<result property="remark" column="remark" />
+	</resultMap>
+	
+	<resultMap type="com.newer.purchase.pojo.Quote" id="quote-result">
+		<id property="id" column="qid" />
+		<result property="quoteNum" column="quote_Num" />	
+		<result property="enquireId" column="enquire_Id" />
+		<result property="quoCompany" column="quo_Company" />
+		<result property="quoAddress" column="quo_Address" />
+		<result property="quoLinkman" column="quo_Linkman" />
+		<result property="quoPhone" column="quo_Phone" />
+		<result property="quoFax" column="quo_Fax" />
+		<result property="quoEmail" column="quo_Email" />
+		<result property="queTitle" column="que_Title" />
+		<result property="queDate" column="que_Date" />
+		<result property="endDate" column="end_Date" />
+		<result property="sumAmount" column="sum_Amount" />
+		<result property="overallPrice" column="overall_Price" />
+		<result property="quoRemark" column="quo_Remark" />
+		<result property="status" column="status" />
+		<association property="quoteDetail" column="qdid" javaType="com.newer.purchase.pojo.QuoteDetail" resultMap="quoteDetail-result" />	
+	</resultMap>
+	
+	<resultMap type="com.newer.purchase.pojo.QuoteDetail" id="quoteDetail-result">
+		<id property="id" column="qdid" />
+		<result property="quoteId" column="quote_Id" />	
+		<result property="orderId" column="order_Id" />
+		<result property="materialCode" column="material_Code" />
+		<result property="materialName" column="material_Name" />
+		<result property="measureUnit" column="measure_Unit" />
+		<result property="standard" column="standard" />
+		<result property="factory" column="factory" />
+		<result property="prodYear" column="prod_Year" />
+		<result property="wrap" column="qwrap" />
+		<result property="amount" column="amount" />
+		<result property="unitPrice" column="unit_Price" />
+		<result property="sumPrice" column="sum_Price" />
+		<result property="mixPrice" column="mix_Price" />
+		<result property="otherPrice" column="other_Price" />
+		<result property="totalPrice" column="total_Price" />
+		<result property="startDate" column="qdstart" />
+		<result property="endDate" column="qdend" />		
+		</resultMap>
+		
+		<resultMap type="com.newer.purchase.pojo.Orders" id="orders-result">
+		<id property="id" column="oid" />
+		<result property="unitPrice" column="unit_Price" />	
+		<result property="sumPrice" column="sum_Price" />	
+		</resultMap>
+		
+		<resultMap type="com.newer.purchase.pojo.ContAppList" id="contAppList-result">
+		<id property="id" column="id" />
+		<result property="status" column="status" />	
+		<result property="mid" column="mid" />
+		<result property="contAppNumber" column="cont_App_Num" />	
+		<result property="statQuote" column="stat_Quote" />
+		<result property="allSumPrice" column="all_Sum_Price" />
+		</resultMap>
+		
+
+	
+	<select id="findQuoteDetail" resultMap="quoteDetail-result">
+	select id,quote_Id,order_Id,material_Code,material_Name,measure_Unit,standard,factory,prod_Year,wrap,amount,
+	unit_Price,sum_Price,mix_Price,other_Price,total_Price,start_Date,end_Date from quote_Detail where quote_id=#{id}
+	</select>
+	
+	<select id="findEnquireById" resultMap="enquire-result">
+	select  e.id,e.enquire_Num,e.enquire_Name,e.build_Date,e.company,e.linkman,e.address,e.phone,e.fax,
+	e.zip,e.email,e.end_Date,e.remark,ed.order_Id,ed.material_Code,ed.material_Name,ed.amount,ed.measure_Unit,
+	ed.start_Date,ed.end_Date,ed.standard,ed.prod_Year,ed.wrap ewrap,q.id qid,quote_Num,q.enquire_Id,quo_Company,
+	quo_Address,quo_Linkman,quo_Phone,quo_Fax,quo_Email,que_Title,que_Date,q.end_Date,sum_Amount,overall_Price,
+	quo_Remark,q.status,o.unit_price,o.sum_price,qd.amount,qd.unit_price,qd.sum_price,qd.mix_price,
+	qd.other_price,qd.total_price,qd.factory,qd.wrap qwrap,qd.start_date qdstart,qd.end_date qdend
+	from enquire e,enquire_detail ed,quote q,orders o,quote_detail qd
+	where e.id=ed.enquire_id and ed.order_id=o.id and e.id=q.enquire_id and qd.quote_id=q.id and e.id=#{id}
+	</select>
+		
+	<sql id="orderBy">
+		<if test="sort != null and order != null">
+			order by 
+			<choose>
+				<when test="sort == 'enquireNum'">enquire_Num</when>
+				<when test="sort == 'enquireName'">enquire_Name</when>
+				<when test="sort == 'endDate'">end_Date</when>
+				<otherwise>ID</otherwise>
+			</choose>
+			<if test="order == 'asc'">asc</if>
+			<if test="order == 'desc'">desc</if>
+		</if>
+	</sql>
+
+	<sql id="WhereCase">
+		<where>
+			e.id=m.enquire_id and m.status in('C001-100','C001-90')  
+			<if test="enquireName != null and enquireName != ''">
+				and enquire_Name LIKE #{enquireName}
+			</if>
+			<if test="beginDate != null and endDate != null">
+				and end_date between #{beginDate} and #{endDate}
+			</if>
+		</where>
+	</sql>
+
+	<select id="findEnquirePager" resultMap="enquirelist-result">
+	select id,enquire_num,build_date,enquire_name,end_date,
+	(select min(overall_price) from quote q where q.enquire_id=a.id) minprice,
+	(select max(overall_price) from quote q where q.enquire_id=a.id) maxprice
+	from (select e.*, row_number() over(
+	<include refid="orderBy" />
+	) rn from enquire e,id_mapping m 
+	<include refid="WhereCase" />
+	<![CDATA[ ) a where rn > #{beginPage} and rn <= #{endPage} ]]>
+	</select>
+
+	<select id="findTotal" resultType="int">
+		select count(e.id) from enquire e,id_mapping m 
+		<include refid="WhereCase" />
+	</select>
+	
+	
+	
+	<select id="findContAppPager" resultMap="contAppList-result">
+  	select mid,id,status,cont_app_num,stat_quote,all_sum_price from (select row_number() over(
+  	order by 
+  	<choose>
+		<when test="sort == 'contAppNum'">cont_App_Num </when>
+		<when test="sort == 'statQuote'">stat_Quote </when>
+		<when test="sort == 'allSumPrice'">all_Sum_Price </when>
+		<otherwise>ca.ID</otherwise>
+ 	</choose>
+ 	<if test="order == 'asc'">asc</if>
+	<if test="order == 'desc'">desc</if>
+  	) rn,ca.*,status,i.id mid from contract_apply ca,id_mapping i 
+  	where i.cont_app_id=ca.id and i.status in ('C001-100','C001-110','C001-120','C001-130','C001-131','C001-140','C001-141') 
+  	<if test="contAppNum !=null and contAppNum != ''">and cont_app_num like #{contAppNum}</if>
+  	)where <![CDATA[ rn > #{beginPage} and rn <= #{endPage} ]]>   
+	</select>
+
+	<select id="findContAppTotal" resultType="int">
+  	select count(ca.id) from contract_apply ca,id_mapping i 
+  	where i.cont_app_id=ca.id and i.status in 
+  	('C001-100','C001-110','C001-120','C001-130','C001-131','C001-140','C001-141') 
+  	<if test="contAppNum !=null and contAppNum != ''">and cont_app_num like #{contAppNum}</if>
+  	</select>
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.newer.dao.EnquireMapperF">
+<resultMap type="com.newer.enquire.pojo.Enquire" id="enquire-result">
+		<id property="id" column="ID" />
+		<result property="enquireNum" column="ENQUIRE_NUM" />
+		<result property="enquireName" column="ENQUIRE_NAME" />
+		<result property="company" column="COMPANY" />
+		<result property="linkman" column="LINKMAN" />
+		<result property="address" column="ADDRESS" />
+		<result property="phone" column="PHONE" />
+		<result property="fax" column="FAX" />
+		<result property="zip" column="ZIP" />	
+		<result property="email" column="EMAIL" />
+		<result property="buildDate" column="BUILD_DATE" javaType="java.util.Date" />
+		<result property="endDate" column="END_DATE" javaType="java.util.Date" />		
+		<result property="remark" column="REMARK" />
+	</resultMap>
+	</mapper>

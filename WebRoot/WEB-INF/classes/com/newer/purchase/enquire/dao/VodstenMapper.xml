@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.newer.purchase.enquire.dao.VodstenMapper">
+
+	<resultMap type="com.newer.purchase.enquire.pojo.Vodsten" id="vo-result">
+		<id property="vid" column="VID" />
+		<result property="vname" column="VNAME" />
+		<result property="vcode" column="VCODE" />
+		<result property="vamount" column="VAMOUNT" />
+		<result property="vmea" column="VMEA" />
+		<result property="vuprice" column="VUPRICE" />
+		<result property="vsprice" column="VSPRICE" />
+		<result property="vldate" column="VLDATE" javaType="java.util.Date" />
+		<result property="vedate" column="VEDATE" javaType="java.util.Date" />
+	</resultMap>
+</mapper>

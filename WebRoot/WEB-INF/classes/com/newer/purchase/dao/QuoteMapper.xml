@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.newer.purchase.dao.QuoteMapper">
+  
+  	<resultMap type="com.newer.purchase.pojo.dto.PoEnquire" id="penq-result">
+  		<result property="id" column="ID"/>
+  		<result property="enquireNum" column="ENQUIRE_NUM"/>
+  		<result property="enquireName" column="ENQUIRE_NAME"/>
+  		<result property="buildDate" column="BUILD_DATE"/>
+  		<result property="company" column="COMPANY"/>
+  		<result property="linkman" column="LINKMAN"/>
+  		<result property="address" column="ADDRESS"/>
+  		<result property="phone" column="PHONE"/>
+  		<result property="fax" column="FAX"/>
+  		<result property="zip" column="ZIP"/>
+  		<result property="email" column="EMAIL"/>
+  		<result property="endDate" column="END_DATE"/>
+  		<result property="remark" column="REMARK"/>
+  		<result property="status" column="STATUS"/>
+  		<result property="stockType" column="STOCK_TYPE"/>
+  		<result property="supplierId" column="SUPPLIER_ID" />
+  		<result property="userId" column="USER_ID"/>
+  	</resultMap>
+  
+  	<!-- ID,ENQUIRE_NUM,ENQUIRE_NAME,BUILD_DATE,COMPANY,LINKMAN,ADDRESS,PHONE,FAX,ZIP,EMAIL,
+  		MATERIAL_CODE,MATERIAL_NAME,AMOUNT,MEASURE_UNIT,START_DATE,END_DATE,STANDARD,FACTORY,
+  		PROD_YEAR,REMARK,STATUS,STOCK_TYPE,SUPPLIER_ID
+  	 -->
+  
+  	<sql id="column">
+  		ID,ENQUIRE_NUM,ENQUIRE_NAME,BUILD_DATE,COMPANY,LINKMAN,ADDRESS,PHONE,FAX,ZIP,EMAIL,
+  		END_DATE,REMARK,STATUS,STOCK_TYPE,SUPPLIER_ID,USER_ID
+  	</sql>
+  	
+  	<sql id="pageSQLHead">
+  		select <include refid="column" /> from(
+  		select row_number() over(
+  	</sql>
+  	
+  	<sql id="orderBy">
+  		<if test="sort != null and sort !=''">
+  			order by
+  			<choose>
+  				<when test="sort == 'id'">E.ID</when>
+  				<when test="sort == 'enquireName'">ENQUIRE_NAME</when>
+  				<when test="sort == 'buildDate'">BUILD_DATE</when>
+  				<when test="sort == 'status'">STATUS</when>
+  				<when test="sort == 'stockType'">STOCK_TYPE</when>
+  				<otherwise>ENQUIRE_NUM</otherwise>
+  			</choose>
+  			
+  			<if test="order == 'asc'">ASC</if>
+  			<if test="order == 'desc'">desc</if>
+  		</if>
+  	</sql>
+  	
+  	<sql id="whereCase">
+  		<where>
+  			1=1 and I.STATUS='C001-80'
+  		<if test="enquireName !=null and enquireName !=''">
+  			and ENQUIRE_NAME LIKE #{enquireName}
+  		</if>
+  		<if test="beginDate !=null and endDate != null">
+  			and E.END_DATE BETWEEN #{beginDate} and #{endDate}
+  		</if>
+  		<if test="userId !=null and userId != ''">
+  			and USER_ID = #{userId}
+  		</if>
+  		<if test="stockType != null and stockType != ''">
+  			and S.STOCK_TYPE = #{stockType}
+  		</if>
+  		</where>
+  	</sql>
+  
+  	<sql id="pageSQLFoot">
+    	<![CDATA[ ) where rn > #{pageno} and rn <= #{pagesize} ]]>
+	</sql>
+	
+	<select id="findEnquire" resultMap="penq-result">
+		<include refid="pageSQLHead" />
+		<include refid="orderBy" />
+		) rn,E.*,I.STATUS,S.STOCK_TYPE,R.SUPPLIER_ID,U.USER_ID from ENQUIRE E LEFT OUTER JOIN ID_MAPPING I ON E.ID=I.ENQUIRE_ID
+      	LEFT OUTER JOIN STOCK S ON I.STOCK_ID=S.ID LEFT OUTER JOIN STOCK_SUPPLIER R ON S.ID=R.STOCK_ID
+      	LEFT OUTER JOIN SUPPLIER U ON R.SUPPLIER_ID=U.ID
+		<include refid="whereCase" />
+		<include refid="pageSQLFoot" />
+	</select>
+	
+  	<resultMap type="com.newer.purchase.pojo.dto.PoQuote" id="pqte-result">
+  		<result property="id" column="ID"/>
+  		<result property="quoteNum" column="QUOTE_NUM"/>
+  		<result property="enquireId" column="ENQUIRE_ID"/>
+  		<result property="quoCompany" column="QUO_COMPANY"/>
+  		<result property="quoAddress" column="QUO_ADDRESS"/>
+  		<result property="quoLinkman" column="QUO_LINKMAN"/>
+  		<result property="quoPhone" column="QUO_PHONE"/>
+  		<result property="quoFax" column="QUO_FAX"/>
+  		<result property="quoEmail" column="QUO_EMAIL"/>
+  		<result property="queTitle" column="QUE_TITLE"/>
+  		<result property="queDate" column="QUE_DATE"/>
+  		<result property="endDate" column="END_DATE"/>
+  		<result property="sumAmount" column="SUM_AMOUNT"/>
+  		<result property="overallPrice" column="OVERALL_PRICE"/>
+  		<result property="quoRemark" column="QUO_REMARK"/>
+  		<result property="status" column="STATUS"/>
+  		<result property="supplierId" column="SUPPLIER_ID"/>
+  		<result property="stockType" column="STOCK_TYPE"/>
+  		<result property="userId" column="USER_ID"/>
+  	</resultMap>
+  	
+  	<!-- 
+  		
+  	 -->
+  	
+  	<sql id="column1">
+  		ID,ENQUIRE_ID,QUOTE_NUM,QUO_COMPANY,QUO_ADDRESS,QUO_LINKMAN,QUO_PHONE,QUO_FAX,QUO_EMAIL,QUE_TITLE,
+		QUE_DATE,END_DATE,SUM_AMOUNT,OVERALL_PRICE,QUO_REMARK,SUPPLIER_ID,STATUS,USER_ID
+  	</sql>
+  	
+  	<sql id="pageSQLHead1">
+  		select <include refid="column1" /> from(
+  		select row_number() over(
+  	</sql>
+  	
+  	<sql id="orderBy1">
+  		<if test="sort != null and sort !=''">
+  			order by
+  			<choose>
+  				<when test="sort == 'id'">Q.ID</when>
+  				<when test="sort == 'queTitle'">QUE_TITLE</when>
+  				<when test="sort == 'quoDate'">QUO_DATE</when>
+  				<when test="sort == 'endDate'">END_DATE</when>
+  				<otherwise>Q.ID</otherwise>
+  			</choose>
+  			
+  			<if test="order == 'asc'">ASC</if>
+  			<if test="order == 'desc'">desc</if>
+  		</if>
+  	</sql>
+  	
+  	<sql id="whereCase1">
+  		<where>
+  			1=1 and i.status='C001-80'
+  		<if test="userId !=null and userId !=''">
+  			and USER_ID = #{userId}
+  		</if>
+  		<if test="queTitle !=null and queTitle !=''">
+  			and QUE_TITLE LIKE #{queTitle}
+  		</if>
+  		<if test="beginDate !=null and endDate != null">
+  			and QUE_DATE BETWEEN #{beginDate} and #{endDate}
+  		</if>
+  		</where>
+  	</sql>
+  
+  	<select id="findQuote" resultMap="pqte-result">
+  		<include refid="pageSQLHead1" />
+		<include refid="orderBy1" />
+		)rn,Q.*,S.USER_ID from QUOTE Q 
+      left outer join id_mapping i on q.enquire_id=i.enquire_id
+      	LEFT OUTER JOIN SUPPLIER S ON Q.SUPPLIER_ID=S.ID
+		<include refid="whereCase1" />
+		<include refid="pageSQLFoot" />
+  	</select>
+  	
+  	<resultMap type="com.newer.purchase.pojo.QuoteDetail" id="qede-result">
+  		<id property="id" column="ID"/>
+  		<result property="quoteId" column="QUOTE_ID"/>
+  		<result property="orderId" column="ORDER_ID"/>
+  		<result property="unitPrice" column="UNIT_PRICE"/>
+  		<result property="sumPrice" column="SUM_PRICE"/>
+  		<result property="mixPrice" column="MIX_PRICE"/>
+  		<result property="otherPrice" column="OTHER_PRICE"/>
+  		<result property="totalPrice" column="TOTAL_PRICE"/>
+  		<result property="materialCode" column="MATERIAL_CODE"/>
+  		<result property="materialName" column="MATERIAL_NAME"/>
+  		<result property="amount" column="AMOUNT"/>
+  		<result property="measureUnit" column="MEASURE_UNIT"/>
+  		<result property="startDate" column="START_DATE"/>
+  		<result property="endDate" column="END_DATE"/>
+  		<result property="standard" column="STANDARD"/>
+  		<result property="factory" column="FACTORY"/>
+  		<result property="prodYear" column="PROD_YEAR"/>
+  		<result property="wrap" column="WRAP"/>
+  		<result property="remark" column="REMARK"/>
+  		<result property="status" column="STATUS"/>
+  		<result property="supplierId" column="SUPPLIER_ID"/>
+  	</resultMap>
+
+	<select id="findByQuote" parameterType="int" resultMap="qede-result">
+  		select D.* from QUOTE_DETAIL D where QUOTE_ID=#{quoteId}
+  	</select>
+  	
+  	<resultMap type="com.newer.purchase.pojo.EnquireDetail" id="ende-result">
+		<id property="id" column="ID"/>
+		<result property="materialCode" column="MATERIAL_CODE"/>
+		<result property="materialName" column="MATERIAL_NAME"/>
+		<result property="amount" column="AMOUNT"/>
+		<result property="measureUnit" column="MEASURE_UNIT"/>
+		<result property="startDate" column="START_DATE"/>
+		<result property="endDate" column="END_DATE"/>
+		<result property="standard" column="STANDARD"/>
+		<result property="factory" column="FACTORY"/>
+		<result property="prodYear" column="PROD_YEAR"/>
+		<result property="wrap" column="WRAP"/>
+		<result property="remark" column="REMARK"/>
+		<result property="enquireId" column="ENQUIRE_ID"/>
+		<result property="orderId" column="ORDER_ID"/>
+	</resultMap>
+	
+	<select id="findByEnquire" parameterType="int" resultMap="ende-result">
+		select D.* from ENQUIRE_DETAIL D where ENQUIRE_ID=#{enquireId}
+	</select>
+  	
+  	<select id="findEnquireTotal" resultType="int">
+  		select count(*) from ENQUIRE E LEFT OUTER JOIN ID_MAPPING I ON E.ID=I.ENQUIRE_ID LEFT 
+  		OUTER JOIN STOCK S ON I.STOCK_ID=S.ID LEFT OUTER JOIN STOCK_SUPPLIER R ON S.ID=R.STOCK_ID
+  		LEFT OUTER JOIN SUPPLIER U ON R.SUPPLIER_ID=U.ID
+      	<include refid="whereCase"></include> 
+  	</select>
+  	
+  	<select id="findQuoteTotal" resultType="int">
+  		select count(Q.ID) from QUOTE Q LEFT OUTER JOIN ID_MAPPING I ON Q.ID=I.QUOTE_ID 
+  		LEFT OUTER JOIN STOCK S ON I.STOCK_ID=S.ID LEFT OUTER JOIN STOCK_SUPPLIER R ON S.ID=R.STOCK_ID
+  		LEFT OUTER JOIN SUPPLIER U ON R.SUPPLIER_ID=U.ID
+  		<include refid="whereCase1"></include>
+  	</select>
+  	
+  	<resultMap type="com.newer.purchase.pojo.Enquire" id="enquire-result">
+  		<id property="id" column="ID"/>
+  		<result property="enquireNum" column="ENQUIRE_NUM"/>
+  		<result property="enquireName" column="ENQUIRE_NAME"/>
+  		<result property="buildDate" column="BUILD_DATE"/>
+  		<result property="company" column="COMPANY"/>
+  		<result property="linkman" column="LINKMAN"/>
+  		<result property="address" column="ADDRESS"/>
+  		<result property="phone" column="PHONE"/>
+  		<result property="fax" column="FAX"/>
+  		<result property="zip" column="ZIP"/>
+  		<result property="email" column="EMAIL"/>
+  		<result property="endDate" column="END_DATE"/>
+  		<result property="remark" column="REMARK"/>
+  	</resultMap>
+  	
+  	<select id="findById" parameterType="int" resultMap="enquire-result">
+  		select E.* from ENQUIRE E where ID=#{id}
+  	</select>
+  	
+  </mapper>

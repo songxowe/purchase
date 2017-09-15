@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.newer.purchase.dao.OrdersMapper">
+	
+	<resultMap type="com.newer.purchase.pojo.Orders" id="orders-result">
+		<id property="id" column="ID"/>
+		<result property="orderNum" column="ORDER_NUM"/>
+		<result property="orderSource" column="ORDER_SOURCE"/>
+		<result property="buildDate" column="BUILD_DATE" javaType="java.util.Date"/>
+		<result property="materialCode" column="MATERIAL_CODE"/>
+		<result property="materialName" column="MATERIAL_NAME"/>
+		<result property="amount" column="AMOUNT"/>
+		<result property="measureUnit" column="MEASURE_UNIT"/>
+		<result property="unitPrice" column="UNIT_PRICE"/>
+		<result property="sumPrice" column="SUM_PRICE"/>
+		<result property="startDate" column="START_DATE" javaType="java.util.Date"/>
+		<result property="endDate" column="END_DATE" javaType="java.util.Date"/>
+		<result property="address" column="ADDRESS"/>
+		<result property="authorId" column="AUTHOR_ID"/>
+		<result property="author" column="AUTHOR"/>
+		<result property="phone" column="PHONE"/>
+		<result property="fax" column="FAX"/>
+		<result property="email" column="EMAIL"/>
+		<result property="remark" column="REMARK"/>
+	</resultMap>
+	
+	<sql id="pageSQLHead">
+		select ID,ORDER_NUM,ORDER_SOURCE,BUILD_DATE,MATERIAL_CODE,MATERIAL_NAME,AMOUNT,MEASURE_UNIT,UNIT_PRICE,SUM_PRICE,START_DATE,END_DATE,ADDRESS,AUTHOR_ID,AUTHOR,PHONE,FAX,EMAIL,REMARK from
+		(select
+		row_number()
+		over(
+	</sql>
+	
+	<sql id="orderBy">
+		<if test="sort!=null and order!=null">
+			order by
+			<choose>
+				<when test="sort=='id'">ID</when>
+				<when test="sort=='buildDate'">BUILD_DATE</when>
+				<when test="sort=='materialCode'">MATERIAL_CODE</when>
+				<when test="sort=='amount'">AMOUNT</when>
+				<when test="sort=='unitPrice'">UNIT_PRICE</when>
+				<when test="sort=='startDate'">START_DATE</when>
+				<when test="sort=='endDate'">END_DATE</when>
+				<when test="sort=='authorId'">AUTHOR_ID</when>
+				<otherwise>ID</otherwise>
+			</choose>
+			<if test="order=='asc'">asc</if>
+			<if test="order=='desc'">desc</if>
+		</if>
+	</sql>
+	
+	<sql id="WhereCase">
+		<where>
+			1=1
+			<if test="orderNum!=null and orderNum!=''">and ORDER_NUM LIKE #{orderNum}</if>
+			<if test="author!=null and author!=''">and AUTHOR LIKE #{author}</if>
+		</where>
+	</sql>
+	
+	<sql id="pageSQLFoot">
+		<![CDATA[)where rn>#{pageno} and rn<=#{pagesize}]]>
+	</sql>
+	
+	<select id="findPager" resultMap="orders-result">
+		<include refid="pageSQLHead"/>
+		<include refid="orderBy"/>
+		)rn,o.* from ORDERS o
+		<include refid="WhereCase"/>
+		<include refid="pageSQLFoot"/>
+	</select>
+	
+	<select id="findPagerTotal" resultType="long">
+		select count(id) from ORDERS
+		<include refid="WhereCase"/>
+	</select>
+	
+	<select id="findByOrders" parameterType="int" resultMap="orders-result">
+  		select O.* from ORDERS O where ID=#{id}
+  	</select>
+	
+</mapper>

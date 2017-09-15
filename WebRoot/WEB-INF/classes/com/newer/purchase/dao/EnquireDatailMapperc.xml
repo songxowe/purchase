@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newer.purchase.dao.EnquireDatailMapperc">
+<resultMap type="com.newer.purchase.pojo.EnquireDetail" id="enquireDetail-result">
+		<id property="id" column="ID" />
+		<result property="enquireId" column="ENQUIRE_ID" />
+		<result property="orderId" column="ORDER_ID" />
+		<result property="materialCode" column="MATERIAL_CODE" />
+		<result property="materialName" column="MATERIAL_NAME" />
+		<result property="amount" column="AMOUNT" />
+		<result property="measureUnit" column="MEASURE_UNIT" />
+		<result property="startDate" column="START_DATE" javaType="java.util.Date"/>
+		<result property="endDate" column="END_DATE" javaType="java.util.Date"/>
+		<result property="standard" column="STANDARD" />
+		<result property="factory" column="FACTORY" />
+		<result property="prodYear" column="PROD_YEAR" />
+		<result property="wrap" column="WRAP"  />
+		<result property="remark" column="REMARK" />
+	</resultMap>
+	</mapper>

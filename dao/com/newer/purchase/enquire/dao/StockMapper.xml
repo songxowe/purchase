@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.newer.purchase.enquire.dao.StockMapper">
+
+	<resultMap type="com.newer.purchase.enquire.pojo.Stock" id="stock-result">
+		<id property="id" column="ID" />
+		<result property="stock_name" column="STOCK_NAME" />
+		<result property="stock_type" column="STOCK_TYPE" />
+		<result property="submit_date" column="SUBMIT_DATE" javaType="java.util.Date"/>
+		<result property="end_date" column="END_DATE" javaType="java.util.Date"/>
+	</resultMap>
+
+	<sql id="pageSQLHead">
+		select ID,STOCK_NAME,STOCK_TYPE,SUBMIT_DATE,END_DATE from
+		(select
+		row_number()
+		over(
+	</sql>
+
+	<sql id="orderBy">
+		<if test="sort != null and order != null">
+			order by
+			<choose>
+				<when test="sort == 'id'">ID</when>
+				<when test="sort == 'stock_name'">STOCK_NAME</when>
+				<when test="sort == 'submit_date'">SUBMIT_DATE</when>
+				<when test="sort == 'end_date'">END_DATE</when>
+				<otherwise>ID</otherwise>
+			</choose>
+
+			<if test="order == 'asc'">asc</if>
+			<if test="order == 'desc'">desc</if>
+		</if>
+	</sql>
+
+	<sql id="WhereCase">
+		<where>
+			1=1
+			<if test="stock_name != null and stock_name != ''">
+				and STOCK_NAME LIKE #{stock_name}
+			</if>
+			<if test="stock_type != null and stock_type != ''">
+				and STOCK_TYPE = #{stock_type}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="pageSQLFoot">
+    <![CDATA[ ) where rn > #{pageno} and rn <= #{pagesize} ]]>
+	</sql>
+
+	<select id="findPager" resultMap="stock-result">
+		<include refid="pageSQLHead" />
+		<include refid="orderBy" />
+		) rn,s.* from STOCK s
+		<include refid="WhereCase" />
+		<include refid="pageSQLFoot" />
+	</select>
+
+	<select id="findPagerTotal" resultType="long">
+		select count(id) from STOCK
+		<include refid="WhereCase" />
+	</select>
+</mapper>

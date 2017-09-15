@@ -1,0 +1,61 @@
+TD {
+	FONT-SIZE: 11px; COLOR: #000000; FONT-FAMILY: tahoma,Verdana, Arial, Helvetica, sans-serif
+}
+TR.T1 {
+	FONT-WEIGHT: normal; FONT-SIZE: 11px; BACKGROUND: #99ccff; COLOR: #ffffff; FONT-FAMILY: tahoma,Verdana, Arial, Helvetica, sans-serif
+    HEIGHT: 20px
+}
+TR.T2 {
+	FONT-WEIGHT: normal; FONT-SIZE: 11px; BACKGROUND: #f2f8ff; COLOR: #ffffff; FONT-FAMILY: tahoma,Verdana, Arial, Helvetica, sans-serif
+    HEIGHT: 20px
+}
+TD.T1 {
+	FONT-WEIGHT: normal; FONT-SIZE: 11px; BACKGROUND: #99ccff; COLOR: #000000; FONT-FAMILY: tahoma,Verdana, Arial, Helvetica, sans-serif
+    HEIGHT: 20px
+}
+TD.T2 {
+	FONT-WEIGHT: normal; FONT-SIZE: 11px; BACKGROUND: #f2f8ff; COLOR: #000000; FONT-FAMILY: tahoma,Verdana, Arial, Helvetica, sans-serif
+    HEIGHT: 20px
+}
+P {
+	FONT-SIZE: 11px; FONT-FAMILY: tahoma,Verdana, Arial, Helvetica, sans-serif
+}
+DIV {
+	FONT-SIZE: 11px; FONT-FAMILY: tahoma,Verdana, Arial, Helvetica, sans-serif
+}
+BODY {
+	FONT-SIZE: 11px; FONT-FAMILY: tahoma,Verdana, Arial, Helvetica, sans-serif
+}
+A {
+	FONT-SIZE: 11px; FONT-FAMILY: tahoma,Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+A:link {
+	COLOR: #0000e0; TEXT-DECORATION: none
+}
+A:visited {
+	COLOR: #0000e0; TEXT-DECORATION: none
+}
+A:active {
+	COLOR: #0000e0; TEXT-DECORATION: none
+}
+A:hover {
+	FONT-SIZE: 11px; COLOR: #cc0000; TEXT-DECORATION: underline
+}
+SELECT {
+	BORDER-RIGHT: #cccccc 0px double; BORDER-TOP: #cccccc 0px double; FONT-SIZE: 11px; BORDER-LEFT: #cccccc 0px double; COLOR: #000000; BORDER-BOTTOM: #cccccc 0px double; FONT-FAMILY: Tahoma, sans-serif; BACKGROUND-COLOR: #ffffff
+}
+INPUT {
+	BORDER-TOP-WIDTH: 1px; PADDING-RIGHT: 1px; PADDING-LEFT: 1px; BORDER-LEFT-WIDTH: 1px; FONT-SIZE: 11px; BORDER-LEFT-COLOR: #cccccc; BORDER-BOTTOM-WIDTH: 1px; BORDER-BOTTOM-COLOR: #cccccc; PADDING-BOTTOM: 1px; BORDER-TOP-COLOR: #cccccc; PADDING-TOP: 1px; FONT-FAMILY: Tahoma, sans-serif; HEIGHT: 18px; BORDER-RIGHT-WIDTH: 1px; BORDER-RIGHT-COLOR: #cccccc
+}
+TEXTAREA {
+	BORDER-TOP-WIDTH: 1px; BORDER-LEFT-WIDTH: 1px; FONT-SIZE: 11px; BORDER-LEFT-COLOR: #000000; BORDER-BOTTOM-WIDTH: 1px; BORDER-BOTTOM-COLOR: #000000; BORDER-TOP-COLOR: #000000; FONT-FAMILY: Tahoma, sans-serif; BACKGROUND-COLOR: #efefef; BORDER-RIGHT-WIDTH: 1px; BORDER-RIGHT-COLOR: #000000
+}
+FONT.code {
+	FONT-FAMILY: Monaco, Courier, Courier New
+}
+CODE {
+	FONT-SIZE: 11px; FONT-FAMILY: "Courier"
+}
+BODY {
+	SCROLLBAR-FACE-COLOR: #dee3e7; SCROLLBAR-HIGHLIGHT-COLOR: #ffffff; SCROLLBAR-SHADOW-COLOR: #dee3e7; SCROLLBAR-3DLIGHT-COLOR: #d1d7dc; SCROLLBAR-ARROW-COLOR: #006699; SCROLLBAR-TRACK-COLOR: #efefef; SCROLLBAR-DARKSHADOW-COLOR: #98aab1
+}

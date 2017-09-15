@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.newer.purchase.dao.StocksMapper">
+  <sql id="columns">ID,STOCK_NUM,STOCK_NAME,COMPANY,AUTHOR,BUDGET,START_DATE,END_DATE,
+  STOCK_TYPE,SUBMIT_DATE,REMARK,LEAD_AGREE,LEAD_OPINION,ENQUIRE_NAME,MATERIAL_CODE,MATERIAL_NAME,
+  AMOUNT,MEASURE_UNIT,START_DATE,SUM_PRICE,UNIT_PRICE,STATUS</sql>
+  	<resultMap type="com.newer.purchase.pojo.dto.Stocks" id="stocks-result">
+  		<id property="id" column="ID" />
+		<result property="stockNum" column="STOCK_NUM" />
+		<result property="stockName" column="STOCK_NAME" />
+		<result property="company" column="COMPANY" />
+		<result property="author" column="AUTHOR" />
+		<result property="budget" column="BUDGET" />
+		<result property="sstartDate" column="START_DATE" />
+		<result property="endDate" column="END_DATE" />
+		<result property="stockType" column="STOCK_TYPE" />
+		<result property="submitDate" column="SUBMIT_DATE" />
+		<result property="remark" column="REMARK" />
+		<result property="leadAgree" column="LEAD_AGREE" />
+		<result property="leadOpinion" column="LEAD_OPINION" />
+		<result property="enquireName" column="ENQUIRE_NAME"/>
+		<result property="materialCode" column="MATERIAL_CODE" />
+		<result property="materialName" column="MATERIAL_NAME" />
+		<result property="amount" column="AMOUNT" />
+		<result property="measureUnit" column="MEASURE_UNIT"/>
+		<result property="ostartDate" column="START_DATE" />
+		<result property="sumPrice" column="SUM_PRICE" />
+		<result property="unitPrice" column="UNIT_PRICE"/>
+		<result property="status" column="STATUS"/>	
+  	</resultMap>
+  	
+  	<sql id="pageSQLHead">
+  		select ID,STOCK_NUM,STOCK_NAME,COMPANY,AUTHOR,
+  STOCK_TYPE,SUBMIT_DATE,ENQUIRE_NAME,
+  STATUS from (
+			 select row_number() over(
+  	</sql>
+  	
+  	<sql id="orderBy">
+  		<if test="sort != null and order !=null">
+				order by
+				<choose>
+					<when test="sort=='id'">S.ID</when>
+					<when test="sort=='stockName'">STOCK_NAME</when>
+					<when test="sort=='stockType'">STOCK_TYPE</when>
+					<when test="sort=='status'">STATUS</when>
+					<when test="sort=='submitDate'">SUBMIT_DATE</when>
+					<when test="sort=='enquireName'">ENQUIRE_NAME</when>
+					<otherwise>S.ID</otherwise>
+				</choose>
+				<if test="order=='asc'">ASC</if>
+				<if test="order=='desc'">DESC</if>
+			</if>  	
+  	</sql>
+
+  	<sql id="whereCase">
+			<where>
+				1=1 
+				<if test="stockName!=null and stockName!=''">
+					and STOCK_NAME like #{stockName}
+				</if>
+				<if test="status != null and status != ''">
+					and STATUS = #{status}
+				</if>
+				<if test="stockType != null and stockType != ''">
+					and STOCK_TYPE = #{stockType}
+				</if>
+			</where>
+	</sql>
+	
+	<sql id="pageSQLFoot">
+  		<![CDATA[ ) where rn > #{pageno} and rn <= #{pagesize} ]]>
+  	</sql>
+  	
+  	<select id="findPager" resultMap="stocks-result">
+  		<include refid="pageSQLHead"/>
+  		<include refid="orderBy"/>
+  		 )rn,S.ID,S.STOCK_NUM,S.STOCK_NAME,S.AUTHOR,S.STOCK_TYPE,S.SUBMIT_DATE,E.ENQUIRE_NAME,E.COMPANY,I.STATUS
+  		  from ID_MAPPING i LEFT OUTER JOIN ENQUIRE e on i.ENQUIRE_ID=e.id
+      	LEFT OUTER JOIN STOCK s on i.STOCK_ID=s.id
+      	LEFT OUTER JOIN ORDERS o on i.ORDER_ID=o.id
+  		<include refid="whereCase"/>
+  		<include refid="pageSQLFoot"/>
+  	</select>
+  	
+  	<select id="findTotal" resultType="int">
+  		select count(s.ID) from STOCK S,ID_MAPPING I	
+  		<include refid="whereCase"/>
+  	</select>
+  </mapper>

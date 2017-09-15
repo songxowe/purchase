@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.newer.purchase.dao.IdMappingMapper">
+  	<resultMap type="com.newer.purchase.pojo.IdMapping" id="idmapping-result">
+  		<id property="id" column="ID" />
+		<result property="orderId" column="ORDER_ID" />
+		<result property="stockId" column="STOCK_ID" />
+		<result property="enquireId" column="ENQUIRE_ID" />
+		<result property="contAppId" column="CONT_APP_ID" />
+		<result property="quoteId" column="QUOTE_ID" />
+		<result property="contId" column="CONT_ID" />
+		<result property="status" column="STATUS" />
+  	</resultMap>
+  </mapper>

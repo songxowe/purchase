@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.newer.purchase.dao.ContractApplyMapper">
+	<sql id="columns">
+	ID,CONT_APP_NUM,STAT_QUOTE,TOP_QUOTE,LOW_QUOTE,ALL_SUM_PRICE,REMARK,AUTHOR_ID,AUTHOR,PLANER_ID,
+	PLANER,PLAN_AGREE,PLAN_OPINION,PLAN_DATE,LEADER_ID,LEADERLEAD_AGREE,LEAD_OPINION,LEAD_DATE,IN_MAPPING_ID,
+	STATUS,SUPPLIER_NUM,MATERIAL_CODE,MATERIAL_NAME,AMOUNT,UNIT_PRICE,MEASURE_UNIT,SUM_PRICE,MIX_PRICE,
+	TOTAL_PRICE,END_DATE,ADDRESS,FACTORY,STOCK_NAME,START_DATE,STOCK_TYPE
+	</sql>
+	<resultMap type="com.newer.purchase.pojo.ContractApplyPanner" id="contractApply-result">
+		<id property="id" column="ID" />
+		<result property="contAppNum" column="CONT_APP_NUM" />
+		<result property="statQuote" column="STAT_QUOTE" />
+		<result property="topQuote" column="TOP_QUOTE" />
+		<result property="lowQuote" column="LOW_QUOTE" />
+		<result property="allSumPrice" column="ALL_SUM_PRICE" />
+		<result property="remark" column="REMARK" />
+		<result property="authorId" column="AUTHOR_ID" />
+		<result property="author" column="AUTHOR" />
+		<result property="planerId" column="PLANER_ID" />
+		<result property="planer" column="PLANER" />
+		<result property="planAgree" column="PLAN_AGREE" />
+		<result property="planOpinion" column="PLAN_OPINION" />
+		<result property="planDate" column="PLAN_DATE" />
+		<result property="leaderId" column="LEADER_ID" />
+		<result property="leader" column="LEADER" />
+		<result property="leadAgree" column="LEAD_AGREE" />
+		<result property="leadOpinion" column="LEAD_OPINION" />
+		<result property="leadDate" column="LEAD_DATE" />
+		<result property="inmappingId" column="IN_MAPPING_ID" />
+		<result property="status" column="STATUS"/>
+		<result property="supplierNum" column="SUPPLIER_NUM"/>
+		<result property="materialCode" column="MATERIAL_CODE"/>
+		<result property="materialName" column="MATERIAL_NAME"/>
+		<result property="amount" column="AMOUNT"/>
+		<result property="unitPrice" column="UNIT_PRICE"/>
+		<result property="measureUnit" column="MEASURE_UNIT"/>
+		<result property="sumPrice" column="SUM_PRICE"/>
+		<result property="mixPrice" column="MIX_PRICE"/>
+		<result property="totalPrice" column="TOTAL_PRICE"/>
+		<result property="endDate" column="END_DATE"/>
+		<result property="address" column="ADDRESS"/>
+		<result property="factory" column="FACTORY"/>
+		<result property="stockname" column="STOCK_NAME"/>
+		<result property="startDate" column="START_DATE"/>
+		<result property="stockType" column="STOCK_TYPE"/>
+	</resultMap>
+	
+	<sql id="pageSQLHead">
+		select ID,CONT_APP_NUM,STAT_QUOTE,TOP_QUOTE,LOW_QUOTE,ALL_SUM_PRICE,REMARK,AUTHOR_ID,AUTHOR,PLANER_ID,
+	PLANER,PLAN_AGREE,PLAN_OPINION,PLAN_DATE,LEADER_ID,LEADER,LEAD_AGREE,LEAD_OPINION,LEAD_DATE,IN_MAPPING_ID,
+	STATUS,SUPPLIER_NUM,MATERIAL_CODE,MATERIAL_NAME,AMOUNT,UNIT_PRICE,MEASURE_UNIT,SUM_PRICE,MIX_PRICE,
+	TOTAL_PRICE,END_DATE,ADDRESS,FACTORY,STOCK_NAME,START_DATE,STOCK_TYPE from
+		(select
+		row_number()
+		over(
+	</sql>
+
+	<sql id="orderBy">
+		<if test="sort != null and order != null">
+			order by
+			<choose>
+				
+				<when test="sort == 'contAppNum'">CONT_APP_NUM</when>
+				<when test="sort == 'leadAgree'">LEAD_AGREE</when>
+				<when test="sort == 'contDate'">CONT_DATE</when>
+				<otherwise>ca.id</otherwise>
+			</choose>
+
+			<if test="order == 'asc'">asc</if>
+			<if test="order == 'desc'">desc</if>
+		</if>
+	</sql>
+
+	<sql id="WhereCase">
+			<if test="contAppNum != null and contAppNum != ''">
+				and CONT_APP_NUM LIKE CONCAT(CONCAT('%', #{contAppNum}),'%')
+			</if>
+	</sql>
+
+	<sql id="pageSQLFoot">
+    <![CDATA[ ) where rn > #{pageno} and rn <= #{pagesize} ]]>
+	</sql>
+
+	<select id="findPagerPlaner" resultMap="contractApply-result">
+		select ID,CONT_APP_NUM,STAT_QUOTE,TOP_QUOTE,LOW_QUOTE,ALL_SUM_PRICE,REMARK,AUTHOR_ID,AUTHOR,PLANER_ID,
+	PLANER,PLAN_AGREE,PLAN_OPINION,PLAN_DATE,LEADER_ID,LEADER,LEAD_AGREE,LEAD_OPINION,LEAD_DATE,IN_MAPPING_ID,
+	STATUS,SUPPLIER_NUM,MATERIAL_CODE,MATERIAL_NAME,AMOUNT,UNIT_PRICE,MEASURE_UNIT,SUM_PRICE,MIX_PRICE,
+	TOTAL_PRICE,END_DATE,ADDRESS,FACTORY,STOCK_NAME,START_DATE,STOCK_TYPE from
+		(select
+		row_number()
+		over(
+		<include refid="orderBy" />
+		) rn,ca.id as id,ca.CONT_APP_NUM,ca.STAT_QUOTE,ca.TOP_QUOTE,ca.LOW_QUOTE,ca.ALL_SUM_PRICE,
+		ca.REMARK,ca.AUTHOR_ID,ca.AUTHOR,ca.PLANER_ID,ca.PLANER,ca.PLAN_AGREE,ca.PLAN_OPINION,
+		ca.PLAN_DATE,ca.LEADER_ID,ca.LEADER,ca.LEAD_AGREE,ca.LEAD_OPINION,ca.LEAD_DATE,
+		i.id IN_MAPPING_ID,i.status status,c.supplier_num,cd.MATERIAL_CODE,cd.MATERIAL_NAME,cd.AMOUNT,
+		cd.UNIT_PRICE,cd.MEASURE_UNIT,cd.SUM_PRICE,cd.MIX_PRICE,cd.OTHER_PRICE,cd.TOTAL_PRICE,
+		cd.END_DATE,cd.ADDRESS,cd.FACTORY,s.STOCK_NAME,s.START_DATE,s.STOCK_TYPE
+		from ID_MAPPING i LEFT OUTER JOIN CONTRACT c on i.cont_id=c.id LEFT OUTER JOIN CONTRACT_APPLY ca on i.cont_app_id=ca.id  
+		LEFT OUTER JOIN CONTRACT_DETAIL cd on i.cont_id=cd.id LEFT OUTER JOIN stock s on i.stock_id=s.id where  status='C001-120'
+		<include refid="WhereCase" />
+		<include refid="pageSQLFoot" />
+	</select>
+	
+	<select id="findPagerLeader" resultMap="contractApply-result">
+		select ID,CONT_APP_NUM,STAT_QUOTE,TOP_QUOTE,LOW_QUOTE,ALL_SUM_PRICE,REMARK,AUTHOR_ID,AUTHOR,PLANER_ID,
+	PLANER,PLAN_AGREE,PLAN_OPINION,PLAN_DATE,LEADER_ID,LEADER,LEAD_AGREE,LEAD_OPINION,LEAD_DATE,IN_MAPPING_ID,
+	STATUS,SUPPLIER_NUM,MATERIAL_CODE,MATERIAL_NAME,AMOUNT,UNIT_PRICE,MEASURE_UNIT,SUM_PRICE,MIX_PRICE,
+	TOTAL_PRICE,END_DATE,ADDRESS,FACTORY,STOCK_NAME,START_DATE,STOCK_TYPE from
+		(select
+		row_number()
+		over(
+		<include refid="orderBy" />
+		) rn,ca.id as id,ca.CONT_APP_NUM,ca.STAT_QUOTE,ca.TOP_QUOTE,ca.LOW_QUOTE,ca.ALL_SUM_PRICE,
+		ca.REMARK,ca.AUTHOR_ID,ca.AUTHOR,ca.PLANER_ID,ca.PLANER,ca.PLAN_AGREE,ca.PLAN_OPINION,
+		ca.PLAN_DATE,ca.LEADER_ID,ca.LEADER,ca.LEAD_AGREE,ca.LEAD_OPINION,ca.LEAD_DATE,
+		i.id IN_MAPPING_ID,i.status status,c.supplier_num,cd.MATERIAL_CODE,cd.MATERIAL_NAME,cd.AMOUNT,
+		cd.UNIT_PRICE,cd.MEASURE_UNIT,cd.SUM_PRICE,cd.MIX_PRICE,cd.OTHER_PRICE,cd.TOTAL_PRICE,
+		cd.END_DATE,cd.ADDRESS,cd.FACTORY,s.STOCK_NAME,s.START_DATE,s.STOCK_TYPE
+		from ID_MAPPING i LEFT OUTER JOIN CONTRACT c on i.cont_id=c.id LEFT OUTER JOIN CONTRACT_APPLY ca on i.cont_app_id=ca.id  
+		LEFT OUTER JOIN CONTRACT_DETAIL cd on i.cont_id=cd.id  LEFT OUTER JOIN stock s on i.stock_id=s.id where  status='C001-130'
+		<include refid="WhereCase" />
+		<include refid="pageSQLFoot" />
+	</select>
+
+	<select id="findPagerTotalPlaner" resultType="long">
+		select count(c.id) from id_mapping i join Contract_Apply c on c.id=i.CONT_APP_ID where i.status='C001-120'
+	</select>
+	
+	<select id="findPagerTotalLeader" resultType="long">
+		select count(c.id) from id_mapping i join Contract_Apply c on c.id=i.CONT_APP_ID where i.status='C001-130'
+	</select>
+	
+
+</mapper>

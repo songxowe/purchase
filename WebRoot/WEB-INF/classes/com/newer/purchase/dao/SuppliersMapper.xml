@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.newer.purchase.dao.SuppliersMapper">
+
+	<resultMap type="com.newer.purchase.pojo.Supplier" id="supplier-result">
+		<id property="id" column="ID" />
+		<result property="supplierNum" column="SUPPLIER_NUM" />
+		<result property="company" column="COMPANY" />
+		<result property="kind" column="KIND" />
+		<result property="contact" column="CONTACT" />
+		<result property="phone" column="PHONE" />
+	</resultMap>
+
+	<sql id="pageSQLHead">
+		select ID,SUPPLIER_NUM,COMPANY,KIND,CONTACT,PHONE from
+		(select row_number() over(
+	</sql>
+
+	<sql id="orderBy">
+		<if test="sort != null and order != null">
+			order by
+			<choose>
+				<when test="sort == 'id'">ID</when>
+				<when test="sort == 'supplierNum'">SUPPLIER_NUM</when>
+				<when test="sort == 'company'">COMPANY</when>
+				<when test="sort == 'kind'">KIND</when>
+				<when test="sort == 'contact'">CONTACT</when>
+				<when test="sort == 'phone'">PHONE</when>
+				<otherwise>ID</otherwise>
+			</choose>
+
+			<if test="order == 'asc'">asc</if>
+			<if test="order == 'desc'">desc</if>
+		</if>
+	</sql>
+
+	<sql id="WhereClase">
+		<where>
+			1=1
+			<if test="supplierNum != null and supplierNum != ''">
+				and SUPPLIER_NUM LIKE #{supplierNum}
+			</if>
+			<if test="company != null and company != ''">
+				and COMPANY LIKE #{company}
+			</if>
+			<if test="kind != null and kind != ''">
+				and KIND  LIKE  #{kind}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="pageSQLFoot">
+    <![CDATA[ ) where rn > #{pageno} and rn <= #{pagesize} ]]>
+	</sql>
+
+	<select id="findPager" resultMap="supplier-result">
+		<include refid="pageSQLHead" />
+		<include refid="orderBy" />
+		) rn,s.* from SUPPLIER s
+		<include refid="WhereClase" />
+		<include refid="pageSQLFoot" />
+	</select>
+
+
+	<select id="findPagerTotal" resultType="long">
+		select count(id) from SUPPLIER
+		<include refid="WhereClase" />
+	</select>
+</mapper>

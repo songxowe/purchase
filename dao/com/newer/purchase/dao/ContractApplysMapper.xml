@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newer.purchase.dao.ContractApplysMapper">
+	<resultMap type="com.newer.purchase.pojo.dto.ContractApplys" id="contractApplys-result">
+	<id property="id" column="MID"/>
+	<result property="contAppNum" column="CONT_APP_NUM"/>
+	<result property="statQuote" column="STAT_QUOTE"/>
+	<result property="topQuote" column="TOP_QUOTE"/>
+	<result property="lowQuote" column="LOW_QUOTE"/>
+	<result property="allSumPrice" column="ALL_SUM_PRICE"/>
+	<result property="leadAgree" column="LEAD_AGREE"/>
+	<result property="enquireid" column="ENQUIRE_ID"/>
+	</resultMap>
+	
+	<sql id="pageSQLHead">
+		select 
+		mid,ENQUIRE_ID,a.CONT_APP_NUM,a.STAT_QUOTE,a.TOP_QUOTE,a.LOW_QUOTE,a.ALL_SUM_PRICE,a.LEAD_AGREE 
+		
+		from (select row_number() over(
+	</sql>
+
+	<sql id="orderBy">
+		<if test="sort != null and order != null">
+			order by
+			<choose>
+				<when test="sort == 'id'">c.ID</when>
+				<when test="sort == 'contAppNum'">CONT_APP_NUM</when>
+				<when test="sort == 'statQuote'">STAT_QUOTE</when>
+				<when test="sort == 'topQuote'">TOP_QUOTE</when>
+				<when test="sort == 'lowQuote'">LOW_QUOTE</when>
+				<when test="sort == 'allSumPrice'">ALL_SUM_PRICE</when>
+				<when test="sort == 'leadAgree'">LEAD_AGREE</when>
+				<when test="sort == 'enquireid'">ENQUIRE_ID</when>
+				<otherwise>c.ID</otherwise>
+			</choose>
+
+			<if test="order == 'asc'">asc</if>
+			<if test="order == 'desc'">desc</if>
+		</if>
+	</sql>
+
+	<sql id="WhereCase">
+		<where>
+			c.ID=i.CONT_APP_ID and i.STATUS='C001-140'
+			<if test="contAppNum != null and contAppNum != ''">
+				and CONT_APP_NUM LIKE #{contAppNum}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="pageSQLFoot">
+    <![CDATA[ ) a where rn > #{pageno} and rn <= #{pagesize} ]]>
+	</sql>
+
+	<select id="findPager" resultMap="contractApplys-result">
+	<include refid="pageSQLHead"/>
+	<include refid="orderBy" />
+	) rn,c.*,i.enquire_id,i.id mid from CONTRACT_APPLY c ,ID_MAPPING i
+	<include refid="WhereCase" />
+	<include refid="pageSQLFoot" />
+		
+	</select>
+
+	<select id="findPagerTotal" resultType="long">
+		select count(c.ID) from CONTRACT_APPLY c ,ID_MAPPING i
+		<include refid="WhereCase" />
+	</select>
+</mapper>

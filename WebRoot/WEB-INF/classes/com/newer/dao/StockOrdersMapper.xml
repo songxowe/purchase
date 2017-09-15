@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.newer.dao.StockOrdersMapper">
+
+<resultMap type="com.newer.enquire.pojo.Stock" id="stock-result">
+    <id property="id" column="ID" />
+    <result property="stockNum" column="STOCK_NUM" />
+    <result property="stockName" column="STOCK_NAME" />
+    <result property="author" column="AUTHOR" />
+    <result property="budget" column="BUDGET" />
+    <result property="startDate" column="START_DATE" javaType="java.util.Date" />
+    <result property="endDate" column="END_DATE" javaType="java.util.Date" />
+    <result property="stockType" column="STOCK_TYPE" />
+    <result property="remark" column="REMARK" />
+    <result property="leadAgree" column="LEAD_AGREE" />
+    <result property="leadOpinion" column="LEAD_OPINION" />
+    
+  </resultMap>
+  <resultMap type="com.newer.enquire.pojo.Orders" id="orders-result">
+		<id property="id" column="ID" />
+		<result property="orderNum" column="ORDER_NUM" />
+		<result property="materialCode" column="MATERIAL_CODE" />
+		<result property="materialName" column="MATERIAL_NAME" />
+		<result property="amount" column="AMOUNT" />		
+		<result property="measureUnit" column="MEASURE_UNIT" />
+		<result property="startDate" column="START_DATE" javaType="java.util.Date"/>
+		<result property="endDate" column="END_DATE" javaType="java.util.Date"/>
+		<result property="sumPrice" column="SUM_PRICE" />
+		<result property="unitPrice" column="UNIT_PRICE" />
+		<result property="amount" column="AMOUNT" />
+		
+		
+	</resultMap>
+  
+	
+    <select id="findById" resultType="com.newer.enquire.pojo.Stock" parameterType="int">
+   
+		select id,STOCK_NUM stockNum,STOCK_NAME stockName,
+		AUTHOR author,BUDGET budget,START_DATE startDate,
+		END_DATE endDate,STOCK_TYPE stockType,REMARK remark,
+		LEAD_AGREE leadAgree,LEAD_OPINION leadOpinion from STOCK 
+		where id =#{id}
+			
+	</select>
+
+	<select id="findRole" resultMap="orders-result">
+   
+		select o.id,o.ORDER_NUM,o.MATERIAL_CODE as materialCode,
+		o.AMOUNT ,o.UNIT_PRICE,
+    	o.MATERIAL_NAME as materialName,o.AMOUNT as amount,
+    	o.MEASURE_UNIT as measureUnit,o.START_DATE as startDate ,
+    	o.END_DATE  ,o.SUM_PRICE as sumPrice
+    	from STOCK s,ID_MAPPING m,ORDERS o 
+    	where s.id=m.stock_id and m.order_id=o.id and s.id=#{Id}
+			
+	</select>
+
+
+</mapper>

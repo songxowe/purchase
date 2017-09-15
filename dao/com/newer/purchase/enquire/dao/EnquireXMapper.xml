@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.newer.purchase.enquire.dao.EnquireXMapper">
+
+	<resultMap type="com.newer.purchase.enquire.pojo.EnquireX" id="enquireX-result">
+		<id property="id" column="id" />
+		<result property="enquireName" column="enquireName" />
+		<result property="stockType" column="stockType" />
+		<result property="startDate" column="startDate" />
+		<result property="endDate" column="endDate" />
+		<result property="status" column="status" />
+	</resultMap>
+
+	<sql id="pageSQLHead">
+		select  distinct * from
+		(select   row_number() over(
+	</sql>
+
+	<sql id="orderBy">
+		<if test="sort != null and order != null">
+			order by
+			<choose>
+			    <when test="sort == 'id'">id</when>
+				<when test="sort == 'enquireName'">enquireName</when>
+				<when test="sort == 'stockType'">stockType</when>
+				<when test="sort == 'startDate'">startDate</when>
+				<when test="sort == 'endDate'">endDate</when>
+				<when test="sort == 'status'">status</when>
+				<otherwise>id</otherwise>
+			</choose>
+
+			<if test="order == 'asc'">asc</if>
+			<if test="order == 'desc'">desc</if>
+		</if>
+	</sql>
+
+	<sql id="WhereCase">
+		<where>
+			1=1 
+			<if test="enquireName != null and enquireName != ''">
+				and enquireName LIKE #{enquireName}
+			</if>
+			<if test="status !=null and status != ''">
+				and status LIKE #{status}
+			</if>
+		</where>
+	</sql>
+	
+	<sql id="pageSQLFoot">
+    <![CDATA[ ) where rn > #{pageno} and rn <= #{pagesize} ]]>
+	</sql>
+
+	<select id="findPager" resultMap="enquireX-result">
+		<include refid="pageSQLHead" />
+		<include refid="orderBy" />
+		) rn,m.* from v_e_s_i m
+		<include refid="WhereCase" />
+		<include refid="pageSQLFoot" />
+	</select>
+
+	<select id="findPagerTotal" resultType="long">
+		select count(id) from v_e_s_i
+		<include refid="WhereCase" />
+	</select>
+	
+
+</mapper>

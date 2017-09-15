@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.newer.purchase.enquire.dao.EnquireBMapper">
+  	<resultMap type="com.newer.purchase.enquire.pojo.EnquireB" id="enquireB-result">
+  		<id property="id" column="id" />
+		<result property="materialCode" column="materialCode" />
+		<result property="materialName" column="materialName" />
+		<result property="measureUnit" column="measureUnit" />
+		<result property="unitPrice" column="unitPrice" />
+		<result property="amount" column="amount" />
+		<result property="sumPrice" column="sumPrice" />
+		<result property="startDate" column="startDate" />
+	</resultMap>
+	<select id="queryAll" resultMap="enquireB-result">
+         select * from v_o_s_e_i where id=#{id}
+	</select>
+  </mapper>

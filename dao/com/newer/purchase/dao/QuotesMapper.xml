@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newer.purchase.dao.QuotesMapper">
+
+	<resultMap type="com.newer.purchase.pojo.dto.Preparecontract" id="preparecontractMapper-result">
+	<result property="sid" column="SID"/>
+	<result property="quoteId" column="qid"/>
+	<result property="snum" column="SUPPLIER_NUM"/>
+	<result property="company" column="COMPANY"/>
+	<result property="materialCode" column="MATERIAL_CODE"/>
+	<result property="materialName" column="MATERIAL_NAME"/>
+	<result property="amount" column="AMOUNT"/>
+	<result property="unitPrice" column="UNIT_PRICE"/>
+	<result property="measureUnit" column="MEASURE_UNIT"/>
+	<result property="mixPrice" column="MIX_PRICE"/>
+	<result property="sumPrice" column="SUM_PRICE"/>
+	<result property="otherPrice" column="OTHER_PRICE"/>
+	<result property="totalPrice" column="TOTAL_PRICE"/>
+	<result property="endDate" column="END_DATE"/>
+	</resultMap>
+	
+	<select id="findQuote" resultMap="preparecontractMapper-result">
+select MATERIAL_CODE,MATERIAL_NAME,AMOUNT,UNIT_PRICE,MEASURE_UNIT,MIX_PRICE,SUM_PRICE,
+OTHER_PRICE,TOTAL_PRICE,qd.END_DATE,s.id sid,s.supplier_num,s.company,q.id qid 
+from QUOTE_DETAIL qd,supplier s,quote q 
+where q.id=qd.quote_id and q.supplier_id=s.id and q.enquire_id=#{id}
+<if test="quoteId !=null"> and q.id=#{quoteId}</if>
+
+</select>
+	<resultMap type="com.newer.purchase.pojo.dto.Contractfile" id="contractfile-result">
+	<id property="id" column="ID"/>
+	<result property="contNum" column="CONT_NUM"/>
+	<result property="seller" column="SELLER"/>
+	<result property="contDate" column="CONT_DATE"/>
+	<result property="contType" column="CONT_TYPE"/>
+	<result property="status" column="STATUS"/>
+	</resultMap>
+	
+		<sql id="pageSQLHead">
+		select ID,CONT_NUM,SELLER,CONT_DATE,CONT_TYPE,STATUS from (
+		select row_number()
+		over (
+	</sql>
+
+	<sql id="orderBy">
+		<if test="sort != null and order != null">
+			order by
+			<choose>
+				<when test="sort=='id'">c.ID</when>
+				<when test="sort=='contNum'">CONT_NUM</when>
+				<when test="sort=='seller'">SELLER</when>
+				<when test="sort=='contDate'">CONT_DATE</when>
+				<when test="sort=='contType'">CONT_TYPE</when>
+				<when test="sort=='status'">STATUS</when>
+				<otherwise>c.ID</otherwise>
+			</choose>
+			<if test="order=='asc'">ASC</if>
+			<if test="order=='desc'">DESC</if>
+		</if>
+	</sql>
+
+	<sql id="whereCase">
+		<where>
+			c.ID=i.CONT_ID and i.STATUS in ('C001-150','C001-160')
+			<if test="contNum != null and contNum != ''">
+				and CONT_NUM like #{contNum}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="pageSQLFoot">
+	  <![CDATA[ ) where rn > #{pageno} and rn <= #{pagesize}]]>
+	</sql>
+
+	<select id="findPager" resultMap="contractfile-result">
+		<include refid="pageSQLHead" />
+		<include refid="orderBy" />
+		) rn,c.*,i.STATUS from CONTRACT c,ID_MAPPING i
+		<include refid="whereCase" />
+		<include refid="pageSQLFoot"/>
+	</select>
+
+	<select id="findTotal" resultType="long">
+		select count(c.id) from CONTRACT c,ID_MAPPING i
+		<include refid="whereCase" />
+	</select>
+	
+	<select id="findContPager">
+	select ID,CONT_NUM,SELLER,CONT_DATE,CONT_TYPE,STATUS from (select row_number() over(
+	order by 
+	<choose>
+		<when test="sort=='id'">c.ID</when>
+		<when test="sort=='contNum'">CONT_NUM</when>
+		<when test="sort=='seller'">SELLER</when>
+		<when test="sort=='contDate'">CONT_DATE</when>
+		<when test="sort=='contType'">CONT_TYPE</when>
+		<when test="sort=='status'">STATUS</when>
+		<otherwise>c.ID</otherwise>
+	</choose>
+	<if test="order=='asc'">ASC</if>
+	<if test="order=='desc'">DESC</if>		
+	) rn,c.*,i.status from CONTRACT c,id_mapping i where c.id=i.cont_id 
+	<if test="contNum != null and contNum != ''">
+	and CONT_NUM like #{contNum}
+	</if>	
+	) where 
+	<![CDATA[ rn > #{pageno} and rn <= #{pagesize}]]>
+	
+	
+	
+	</select>
+	
+	
+	
+	
+	
+	
+</mapper>

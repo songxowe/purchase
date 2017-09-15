@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.newer.purchase.dao.plan.OrdersMapper">
+
+	<resultMap type="com.newer.purchase.pojo.plan.OrdersView" id="ordersView-result">
+		<id property="id" column="ID" />
+		<result property="materialCode" column="MATERIALCODE" />
+		<result property="materialName" column="MATERIALNAME" />
+		<result property="amount" column="AMOUNT" />
+		<result property="unitPrice" column="UNITPRICE" />
+		<result property="sumPrice" column="SUMPRICE" />
+		<result property="startDate" column="STARTDATE" javaType="java.util.Date"/>
+		<result property="endDate" column="ENDDATE" javaType="java.util.Date"/>
+		<result property="orderSource" column="ORDERSOURCE" />
+		<result property="status" column="STATUS" />
+	</resultMap>
+	
+	<resultMap type="com.newer.purchase.pojo.plan.Orders" id="orders-result">
+		<id property="id" column="ID" />
+		<result property="orderNum" column="ORDER_NUM" />
+		<result property="orderSource" column="ORDER_SOURCE" />
+		<result property="materialCode" column="MATERIAL_CODE" />
+		<result property="materialName" column="MATERIAL_NAME" />
+		<result property="amount" column="AMOUNT" />		
+		<result property="measureUnit" column="MEASURE_UNIT" />
+		<result property="unitPrice" column="UNIT_PRICE" />
+		<result property="sumPrice" column="SUM_PRICE" />
+		<result property="startDate" column="START_DATE" javaType="java.util.Date"/>
+		<result property="endDate" column="END_DATE" javaType="java.util.Date"/>
+		<result property="authorId" column="AUTHOR_ID" />
+		<result property="author" column="AUTHOR" />
+		<result property="phone" column="PHONE" />
+		<result property="fax" column="FAX" />
+		<result property="email" column="EMAIL" />
+		<result property="remark" column="REMARK" />
+	</resultMap>
+
+	<sql id="pageSQLHead">
+		select ID,MATERIALCODE,MATERIALNAME,AMOUNT,UNITPRICE,
+		SUMPRICE,STARTDATE,ENDDATE,ORDERSOURCE,STATUS
+		 from
+		(select row_number() over(
+	</sql>
+
+	<sql id="orderBy">
+		<if test="sort != null and order != null">
+			order by
+			<choose>
+				<when test="sort == 'id'">ID</when>
+				<when test="sort == 'materialCode'">MATERIALCODE</when>
+				<when test="sort == 'materialName'">MATERIALNAME</when>
+				<when test="sort == 'amount'">AMOUNT</when>
+				<when test="sort == 'unitPrice'">UNITPRICE</when>
+				<when test="sort == 'sumPrice'">SUMPRICE</when>
+				<when test="sort == 'startDate'">STARTDATE</when>
+				<when test="sort == 'endDate'">ENDDATE</when>
+				<when test="sort == 'orderSource'">ORDERSOURCE</when>
+				<when test="sort == 'status'">STATUS</when>
+				<otherwise>ID</otherwise>
+			</choose>
+
+			<if test="order == 'asc'">asc</if>
+			<if test="order == 'desc'">desc</if>
+		</if>
+	</sql>
+
+	<sql id="WhereClase">
+		<where>
+			1=1
+			<if test="materialCode != null and materialCode != ''">
+				and MATERIALCODE LIKE #{materialCode}
+			</if>
+			<if test="materialName != null and materialName != ''">
+				and MATERIALNAME LIKE #{materialName}
+			</if>
+			<if test="status != null and status != ''">
+				and STATUS =#{status}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="pageSQLFoot">
+    <![CDATA[ ) where rn > #{pageno} and rn <= #{pagesize} ]]>
+	</sql>
+
+	<select id="findPager" resultMap="ordersView-result">
+		<include refid="pageSQLHead" />
+		<include refid="orderBy" />
+		) rn,v.* from v_orders_idMapping v
+		<include refid="WhereClase" />
+		<include refid="pageSQLFoot" />
+	</select>
+
+
+	<select id="findPagerTotal" resultType="long">
+		select count(id) from v_orders_idMapping
+		<include refid="WhereClase" />
+	</select>
+	
+	<select id="findById" resultMap="orders-result" >
+		select  ID,ORDER_NUM,ORDER_SOURCE,MATERIAL_CODE,MATERIAL_NAME,AMOUNT,MEASURE_UNIT,
+		UNIT_PRICE,SUM_PRICE,START_DATE,END_DATE,AUTHOR_ID,AUTHOR,PHONE,FAX,EMAIL,REMARK
+		from ORDERS 
+		where ID=#{id}
+	</select>
+	
+	
+	
+
+	<sql id="WhereClase1">
+		<where>
+			STATUS ='C001-20'
+			<if test="materialCode != null and materialCode != ''">
+				and MATERIALCODE LIKE #{materialCode}
+			</if>
+			<if test="materialName != null and materialName != ''">
+				and MATERIALNAME LIKE #{materialName}
+			</if>
+
+		</where>
+	</sql>
+
+	
+
+	<select id="findPager1" resultMap="ordersView-result">
+		<include refid="pageSQLHead" />
+		<include refid="orderBy" />
+		) rn,v.* from v_orders_idMapping v
+		<include refid="WhereClase1" />
+		<include refid="pageSQLFoot" />
+	</select>
+
+
+	<select id="findPagerTotal1" resultType="long">
+		select count(id) from v_orders_idMapping
+		<include refid="WhereClase1" />
+	</select>
+	
+	
+	
+	
+	
+</mapper>

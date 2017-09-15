@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newer.purchase.dao.MaterialMapper">
+	<resultMap type="com.newer.purchase.pojo.Material" id="material-result">
+		<id property="id" column="ID" />
+		<result property="materialNum" column="MATERIAL_NUM" />
+		<result property="materialName" column="MATERIAL_NAME" />
+		<result property="materialUnit" column="MATERIAL_UNIT" />
+		<result property="materialType" column="MATERIAL_TYPE" />
+	</resultMap>
+
+	<sql id="pageSQLHead">
+		select
+		ID,MATERIAL_NUM,MATERIAL_NAME,MATERIAL_UNIT,MATERIAL_TYPE from
+		(select row_number() over(
+	</sql>
+
+	<sql id="orderBy">
+		<if test="sort != null and order != null">
+			order by
+			<choose>
+				<when test="sort == 'id'">ID</when>
+				<when test="sort == 'materialNum'">MATERIAL_NUM</when>
+				<when test="sort == 'materialName'">MATERIAL_NAME</when>
+				<when test="sort == 'materialUnit'">MATERIAL_UNIT</when>
+				<when test="sort == 'materialType'">MATERIAL_TYPE</when>
+				<otherwise>ID</otherwise>
+			</choose>
+
+			<if test="order == 'asc'">asc</if>
+			<if test="order == 'desc'">desc</if>
+		</if>
+	</sql>
+
+	<sql id="WhereCase">
+		<where>
+			1=1
+			<if test="materialNum!=null and materialNum!=''">
+				and MATERIAL_NUM LIKE #{materialNum}
+			</if>
+			<if test="materialName!=null and materialName!=''">
+				and MATERIAL_NAME LIKE #{materialName}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="pageSQLFoot">
+    <![CDATA[ ) where rn > #{pageno} and rn <= #{pagesize} ]]>
+	</sql>
+
+	<select id="findPager" resultMap="material-result">
+		<include refid="pageSQLHead" />
+		<include refid="orderBy" />
+		) rn,m.* from MATERIAL m
+		<include refid="WhereCase" />
+		<include refid="pageSQLFoot" />
+
+	</select>
+
+	<select id="findPagerTotal" resultType="long">
+		select count(ID) from MATERIAL m
+		<include refid="WhereCase" />
+	</select>
+
+	<select id="findById" parameterType="Integer" resultMap="material-result">
+		select ID,MATERIAL_NUM,MATERIAL_NAME,MATERIAL_UNIT,MATERIAL_TYPE from
+		MATERIAL where ID=#{id}
+	</select>
+</mapper>
